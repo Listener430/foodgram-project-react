@@ -1,7 +1,6 @@
 from djoser import serializers
-from rest_framework import serializers as sr
-
 from foodgram.models import Follow
+from rest_framework import serializers as sr
 
 from .models import User
 

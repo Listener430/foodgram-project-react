@@ -1,26 +1,21 @@
-import io
-
-import pandas
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from foodgram.models import (Favorite, Follow, Ingredient,
+                             IngredientRecipeAmount, Recipe, ShoppingCart, Tag)
 from rest_framework import filters, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-
-from foodgram.models import (Favorites, Follow, Ingredient,
-                             IngredientRecipeAmount, Recipe, Shopping_cart,
-                             Tag)
 from users.models import User
 
 from .filters import IngredientSearchFilter
 from .mixins import ListMixin
-from .serializers import (IngredientSerializer, MySubcriptionsSerializer,
-                          RecipeSerializer, RecipeShortSerializer,
+from .serializers import (IngredientSerializer, RecipeSerializer,
+                          RecipeShortSerializer, SubcriptionsListSerializer,
                           SubcriptionsSerializer)
 
 
@@ -51,8 +46,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         recipe = get_object_or_404(Recipe, id=pk)
         if request.method == "POST":
-            if not Favorites.objects.filter(recipe=recipe, user=request.user).exists():
-                Favorites.objects.create(recipe=recipe, user=request.user)
+            if not Favorite.objects.filter(recipe=recipe, user=request.user).exists():
+                Favorite.objects.create(recipe=recipe, user=request.user)
                 return Response(
                     RecipeShortSerializer(recipe).data, status=status.HTTP_200_OK
                 )
@@ -62,8 +57,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
 
         if request.method == "DELETE":
-            if Favorites.objects.filter(recipe=recipe, user=request.user).exists():
-                Favorites.objects.filter(recipe=recipe, user=request.user).delete()
+            if Favorite.objects.filter(recipe=recipe, user=request.user).exists():
+                Favorite.objects.filter(recipe=recipe, user=request.user).delete()
                 return Response(
                     {"detail": "Удалили из списка фаворитов"}, status=status.HTTP_200_OK
                 )
@@ -80,10 +75,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk=None):
         recipe = get_object_or_404(Recipe, id=pk)
         if request.method == "POST":
-            if not Shopping_cart.objects.filter(
+            if not ShoppingCart.objects.filter(
                 recipe=recipe, user=request.user
             ).exists():
-                Shopping_cart.objects.create(recipe=recipe, user=request.user)
+                ShoppingCart.objects.create(recipe=recipe, user=request.user)
                 return Response(
                     RecipeShortSerializer(recipe).data, status=status.HTTP_200_OK
                 )
@@ -93,8 +88,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
 
         if request.method == "DELETE":
-            if Shopping_cart.objects.filter(recipe=recipe, user=request.user).exists():
-                Shopping_cart.objects.filter(recipe=recipe, user=request.user).delete()
+            if ShoppingCart.objects.filter(recipe=recipe, user=request.user).exists():
+                ShoppingCart.objects.filter(recipe=recipe, user=request.user).delete()
                 return Response(
                     {"detail": "Удалили из списка покупок"}, status=status.HTTP_200_OK
                 )
@@ -109,37 +104,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticatedOrReadOnly],
     )
     def download_shopping_cart(self, request):
-        """в постмане чтобы посмотреть надо выбрать Save Response, Save to file"""
-        queryset1 = (
+        shopping_cart = (
             IngredientRecipeAmount.objects.filter(
                 recipe__shopping_following_recipe__user=request.user
             )
             .values("ingredient__name", "ingredient__measurement_unit")
-            .annotate(amount=Sum("amount"))
+            .annotate(quantity=Sum("amount"))
         )
-        data = list(queryset1)
-        data_frame = pandas.DataFrame(data)
-        data_frame.rename(
-            columns={
-                "ingredient__name": "ингредиент",
-                "ingredient__measurement_unit": "ед.изм",
-                "amount": "кол-во",
-            },
-            inplace=True,
-        )
-        excel_file = io.BytesIO()
-
-        writer = pandas.ExcelWriter(excel_file, engine="xlsxwriter")
-        data_frame.to_excel(writer, sheet_name="список покупок", index=False)
-        writer.save()
-        writer.close()
-
-        excel_file.seek(0)
-        response = HttpResponse(
-            excel_file.read(),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-        response["Content-Disposition"] = "attachment; filename=shopping_list.xlsx"
+        content = (
+            [f'{item["ingredient__name"]} ({item["ingredient__measurement_unit"]})'
+            f'- {item["quantity"]}\n'
+            for item in shopping_cart]
+                   )
+        response = HttpResponse(content, content_type='text/plain')
+        response['Content-Disposition'] = (f'attachment; filename = "shopping_cart"')
         return response
 
 
@@ -171,12 +149,12 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
                 {"detail": "Вы и не были подписаны на этого пользователя"},
                 status=status.HTTP_400_BAD_REQUEST)
             
-class MySubscriptionViewSet(viewsets.ModelViewSet):
+class SubscriptionListViewSet(viewsets.ModelViewSet):
     queryset =  User.objects.all()
-    serializer_class = MySubcriptionsSerializer
+    serializer_class = SubcriptionsListSerializer
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def subscriptions(self, request, *args, **kwargs):
         queryset = User.objects.filter(following__user = request.user)
-        return Response(MySubcriptionsSerializer(queryset, many = True).data, status=status.HTTP_200_OK)
+        return Response(SubcriptionsListSerializer(queryset, many = True).data, status=status.HTTP_200_OK)
