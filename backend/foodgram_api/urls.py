@@ -20,3 +20,4 @@ urlpatterns = [
         SubscriptionListViewSet.as_view({"get": "subscriptions"}), name = "subscriptions",
     ),
 ]
+

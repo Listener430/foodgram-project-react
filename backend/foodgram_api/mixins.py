@@ -7,3 +7,4 @@ class ListMixin(
     viewsets.GenericViewSet,
 ):
     pass
+
