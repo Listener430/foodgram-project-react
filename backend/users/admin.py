@@ -22,3 +22,5 @@ admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(ShoppingCart)
 admin.site.register(Favorite)
 admin.site.register(Follow)
+
+

@@ -12,7 +12,7 @@ router.register(r"recipes", RecipeViewSet)
 urlpatterns = [
     path("", include(router.urls), name="api_urls"),
     path(
-        "users/<user_id>/subscribe/",
+        "users/<int:user_id>/subscribe/",
         SubscriptionViewSet.as_view({"get": "list", "post": "create_subscription", "delete": "delete_subscription"}), name = "subscribe"
     ),
     path(
@@ -20,4 +20,6 @@ urlpatterns = [
         SubscriptionListViewSet.as_view({"get": "subscriptions"}), name = "subscriptions",
     ),
 ]
+
+
 

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from collections import OrderedDict
 from drf_extra_fields.fields import Base64ImageField
 from foodgram.models import (Favorite, Follow, Ingredient,
                              IngredientRecipeAmount, Recipe, ShoppingCart, Tag)
@@ -16,7 +17,6 @@ class CustomUserListSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get("request")
-        print("1", request)
         if request is None or request.user.is_anonymous:
             return False
         return Follow.objects.filter(user=request.user, author = obj).exists()
@@ -93,6 +93,38 @@ class RecipeSerializer(serializers.ModelSerializer):
             "text",
             "cooking_time",
         )
+    def to_internal_value(self, data): 
+        return data 
+
+    def validate(self, data):
+        ingredients = self.to_internal_value(data)['ingredients']
+        if not ingredients:
+            raise serializers.ValidationError(
+                {
+                    "ingredients": "Нет ингредиентов"
+                }
+            )
+        ingredients_ids = [item_ingr["id"] for item_ingr in ingredients]
+        if len(ingredients_ids) != len(set(ingredients_ids)):
+            raise serializers.ValidationError(
+                {
+                    "ingredients": "Повторяются!!!"
+                }
+            ) 
+        tags = data['tags']
+        if len(tags) != len(set(tags)):
+            raise serializers.ValidationError(
+                {
+                    "tags": "Повторяются!!!"
+                }
+            )
+        if not tags:
+            raise serializers.ValidationError(
+                {
+                    "tags": "Нет тегов"
+                }
+            )  
+        return data
 
     def create_ingredients(self, ingredients_data , recipe):
         new_ingredients = [
@@ -105,7 +137,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         ]
         IngredientRecipeAmount.objects.bulk_create(new_ingredients)
         return recipe
-
+    
     def create(self, validated_data):
         tags = validated_data.pop("tags")
         ingredients_data = validated_data.pop("ingredientrecipeamount_set")
@@ -130,36 +162,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop("ingredientrecipeamount_set")
         self.create_ingredients(ingredients_data, instance)
         return super().update(instance, validated_data)
-
-    def validate(self, data):
-        ingredients = self.initial_data.get("ingredients")
-        if not ingredients:
-            raise serializers.ValidationError(
-                {
-                    "ingredients": "Нет ингредиентов"
-                }
-            )
-        ingredients_ids = [item_ingr["id"] for item_ingr in ingredients]
-        if len(ingredients_ids) != len(set(ingredients_ids)):
-            raise serializers.ValidationError(
-                {
-                    "ingredients": "Повторяются!!!"
-                }
-            ) 
-        tags = self.initial_data.get("tags")
-        if len(tags) != len(set(tags)):
-            raise serializers.ValidationError(
-                {
-                    "tags": "Повторяются!!!"
-                }
-            )
-        if not tags:
-            raise serializers.ValidationError(
-                {
-                    "tags": "Нет тегов"
-                }
-            )  
-        return data
 
     def get_is_favorited(self, obj):
         request = self.context.get("request")
@@ -222,4 +224,6 @@ class SubcriptionsListSerializer(serializers.ModelSerializer):
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author = obj).count()
+
+
 

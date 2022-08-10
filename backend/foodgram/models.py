@@ -1,6 +1,7 @@
 from colorfield.fields import ColorField
 from django.core import validators
 from django.db import models
+
 from users.models import User
 
 
@@ -155,3 +156,5 @@ class ShoppingCart(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["user", "recipe"], name="unique_follower")
         ]
+
+        
