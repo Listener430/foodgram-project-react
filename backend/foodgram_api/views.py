@@ -2,16 +2,15 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from foodgram.models import (Favorite, Follow, Ingredient,
-                             IngredientRecipeAmount, Recipe, ShoppingCart, Tag)
-from rest_framework import filters, serializers, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from users.models import User
 
+from foodgram.models import (Favorite, Follow, Ingredient,
+                             IngredientRecipeAmount, Recipe, ShoppingCart)
+from users.models import User
 from .filters import IngredientSearchFilter
 from .mixins import ListMixin
 from .serializers import (IngredientSerializer, RecipeSerializer,

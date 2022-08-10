@@ -1,11 +1,10 @@
-from django.shortcuts import get_object_or_404
-from collections import OrderedDict
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework import serializers
+
 from foodgram.models import (Favorite, Follow, Ingredient,
                              IngredientRecipeAmount, Recipe, ShoppingCart, Tag)
-from rest_framework import serializers
 from users.models import User
-from django.urls import reverse
+
 
 
 class CustomUserListSerializer(serializers.ModelSerializer):
@@ -93,18 +92,16 @@ class RecipeSerializer(serializers.ModelSerializer):
             "text",
             "cooking_time",
         )
-    def to_internal_value(self, data): 
-        return data 
 
     def validate(self, data):
-        ingredients = self.to_internal_value(data)['ingredients']
+        ingredients = data['ingredientrecipeamount_set']
         if not ingredients:
             raise serializers.ValidationError(
                 {
                     "ingredients": "Нет ингредиентов"
                 }
             )
-        ingredients_ids = [item_ingr["id"] for item_ingr in ingredients]
+        ingredients_ids = [item_ingr["ingredient"] for item_ingr in ingredients]
         if len(ingredients_ids) != len(set(ingredients_ids)):
             raise serializers.ValidationError(
                 {
@@ -224,6 +221,8 @@ class SubcriptionsListSerializer(serializers.ModelSerializer):
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author = obj).count()
+
+        
 
 
 
