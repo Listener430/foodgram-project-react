@@ -8,7 +8,6 @@ from foodgram.models import (
     ShoppingCart,
     Tag,
 )
-
 from .models import User
 
 
