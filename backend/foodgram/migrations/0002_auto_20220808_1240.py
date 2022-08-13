@@ -10,79 +10,128 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('foodgram', '0001_initial'),
+        ("foodgram", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='shoppingcart',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='shopping_cart_follower', to=settings.AUTH_USER_MODEL, verbose_name='Подписчик'),
+            model_name="shoppingcart",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="shopping_cart_follower",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Подписчик",
+            ),
         ),
         migrations.AddField(
-            model_name='recipe',
-            name='author',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipes', to=settings.AUTH_USER_MODEL),
+            model_name="recipe",
+            name="author",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="recipes",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='recipe',
-            name='ingredients',
-            field=models.ManyToManyField(through='foodgram.IngredientRecipeAmount', to='foodgram.Ingredient'),
+            model_name="recipe",
+            name="ingredients",
+            field=models.ManyToManyField(
+                through="foodgram.IngredientRecipeAmount", to="foodgram.Ingredient"
+            ),
         ),
         migrations.AddField(
-            model_name='recipe',
-            name='tags',
-            field=models.ManyToManyField(through='foodgram.TagRecipe', to='foodgram.Tag'),
+            model_name="recipe",
+            name="tags",
+            field=models.ManyToManyField(
+                through="foodgram.TagRecipe", to="foodgram.Tag"
+            ),
         ),
         migrations.AddField(
-            model_name='ingredientrecipeamount',
-            name='ingredient',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ingredientrecipeamount', to='foodgram.Ingredient'),
+            model_name="ingredientrecipeamount",
+            name="ingredient",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="ingredientrecipeamount",
+                to="foodgram.Ingredient",
+            ),
         ),
         migrations.AddField(
-            model_name='ingredientrecipeamount',
-            name='recipe',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='foodgram.Recipe'),
+            model_name="ingredientrecipeamount",
+            name="recipe",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="foodgram.Recipe"
+            ),
         ),
         migrations.AddField(
-            model_name='follow',
-            name='author',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='following', to=settings.AUTH_USER_MODEL, verbose_name='Автор'),
+            model_name="follow",
+            name="author",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="following",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Автор",
+            ),
         ),
         migrations.AddField(
-            model_name='follow',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='follower', to=settings.AUTH_USER_MODEL, verbose_name='Подписчик'),
+            model_name="follow",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="follower",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Подписчик",
+            ),
         ),
         migrations.AddField(
-            model_name='favorite',
-            name='recipe',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='following_recipe', to='foodgram.Recipe', verbose_name='Рецепт'),
+            model_name="favorite",
+            name="recipe",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="following_recipe",
+                to="foodgram.Recipe",
+                verbose_name="Рецепт",
+            ),
         ),
         migrations.AddField(
-            model_name='favorite',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipe_follower', to=settings.AUTH_USER_MODEL, verbose_name='Подписчик'),
+            model_name="favorite",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="recipe_follower",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Подписчик",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='tagrecipe',
-            constraint=models.UniqueConstraint(fields=('tag', 'recipe'), name='unique_tag_recipe'),
+            model_name="tagrecipe",
+            constraint=models.UniqueConstraint(
+                fields=("tag", "recipe"), name="unique_tag_recipe"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='shoppingcart',
-            constraint=models.UniqueConstraint(fields=('user', 'recipe'), name='unique_follower'),
+            model_name="shoppingcart",
+            constraint=models.UniqueConstraint(
+                fields=("user", "recipe"), name="unique_follower"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='ingredientrecipeamount',
-            constraint=models.UniqueConstraint(fields=('ingredient', 'recipe'), name='unique_ingredients_recipe'),
+            model_name="ingredientrecipeamount",
+            constraint=models.UniqueConstraint(
+                fields=("ingredient", "recipe"), name="unique_ingredients_recipe"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='follow',
-            constraint=models.UniqueConstraint(fields=('user', 'author'), name='unique_follower'),
+            model_name="follow",
+            constraint=models.UniqueConstraint(
+                fields=("user", "author"), name="unique_follower"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='favorite',
-            constraint=models.UniqueConstraint(fields=('user', 'recipe'), name='unique_follower'),
+            model_name="favorite",
+            constraint=models.UniqueConstraint(
+                fields=("user", "recipe"), name="unique_follower"
+            ),
         ),
     ]

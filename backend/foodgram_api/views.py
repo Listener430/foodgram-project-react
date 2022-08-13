@@ -1,21 +1,33 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
+
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from foodgram.models import (Favorite, Follow, Ingredient,
-                             IngredientRecipeAmount, Recipe, ShoppingCart)
+from django_filters.rest_framework import DjangoFilterBackend
+from foodgram.models import (
+    Favorite,
+    Follow,
+    Ingredient,
+    IngredientRecipeAmount,
+    Recipe,
+    ShoppingCart,
+)
 from users.models import User
+
 from .filters import IngredientSearchFilter
 from .mixins import ListMixin
-from .serializers import (IngredientSerializer, RecipeSerializer,
-                          RecipeShortSerializer, SubcriptionsListSerializer,
-                          SubcriptionsSerializer)
+from .serializers import (
+    IngredientSerializer,
+    RecipeSerializer,
+    RecipeShortSerializer,
+    SubcriptionsListSerializer,
+    SubcriptionsSerializer,
+)
 
 
 class IngredientViewSet(ListMixin):
@@ -24,7 +36,7 @@ class IngredientViewSet(ListMixin):
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filterset_class = IngredientSearchFilter
-    search_fields = ('^name',)
+    search_fields = ("^name",)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -33,7 +45,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
-    
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
@@ -90,13 +102,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .values("ingredient__name", "ingredient__measurement_unit")
             .annotate(quantity=Sum("amount"))
         )
-        content = (
-            [f'{item["ingredient__name"]} ({item["ingredient__measurement_unit"]})'
+        content = [
+            f'{item["ingredient__name"]} ({item["ingredient__measurement_unit"]})'
             f'- {item["quantity"]}\n'
-            for item in shopping_cart]
-                   )
-        response = HttpResponse(content, content_type='text/plain')
-        response['Content-Disposition'] = (f'attachment; filename = "shopping_cart"')
+            for item in shopping_cart
+        ]
+        response = HttpResponse(content, content_type="text/plain")
+        response["Content-Disposition"] = f'attachment; filename = "shopping_cart"'
         return response
 
 
@@ -113,10 +125,16 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         if request.method == "POST":
             if not Follow.objects.filter(user=request.user, author=author).exists():
                 Follow.objects.create(user=request.user, author=author)
-                return Response(SubcriptionsSerializer(author, context={'request': self.request}).data, status=status.HTTP_200_OK)
+                return Response(
+                    SubcriptionsSerializer(
+                        author, context={"request": self.request}
+                    ).data,
+                    status=status.HTTP_200_OK,
+                )
             return Response(
                 {"detail": "Вы уже подписаны на этого пользователя"},
-                status=status.HTTP_400_BAD_REQUEST,)
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def delete_subscription(self, request, *args, **kwargs):
         author = get_object_or_404(User, id=self.kwargs.get("user_id"))
@@ -126,16 +144,21 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
                 return Response("Подписка удалена", status=status.HTTP_200_OK)
             return Response(
                 {"detail": "Вы и не были подписаны на этого пользователя"},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class SubscriptionListViewSet(viewsets.ModelViewSet):
-    queryset =  User.objects.all()
+    queryset = User.objects.all()
     serializer_class = SubcriptionsListSerializer
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def subscriptions(self, request, *args, **kwargs):
-        queryset = User.objects.filter(following__user = request.user)
-        return Response(SubcriptionsListSerializer(queryset, many = True, context={'request': self.request}).data, status=status.HTTP_200_OK)
-
+        queryset = User.objects.filter(following__user=request.user)
+        return Response(
+            SubcriptionsListSerializer(
+                queryset, many=True, context={"request": self.request}
+            ).data,
+            status=status.HTTP_200_OK,
+        )

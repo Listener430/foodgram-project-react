@@ -1,6 +1,7 @@
+from rest_framework import serializers as sr
+
 from djoser import serializers
 from foodgram.models import Follow
-from rest_framework import serializers as sr
 
 from .models import User
 
@@ -29,7 +30,7 @@ class CustomUserSerializer(serializers.UserCreateSerializer):
 
 
 class CustomUserListSerializer(serializers.UserCreateSerializer):
-    
+
     is_subscribed = sr.SerializerMethodField()
 
     class Meta:
@@ -47,6 +48,4 @@ class CustomUserListSerializer(serializers.UserCreateSerializer):
         request = self.context.get("request")
         if request is None or request.user.is_anonymous:
             return False
-        return Follow.objects.filter(user=request.user, author = obj).exists()
-
-        
+        return Follow.objects.filter(user=request.user, author=obj).exists()

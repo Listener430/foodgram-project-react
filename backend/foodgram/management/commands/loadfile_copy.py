@@ -31,5 +31,3 @@ class Command(BaseCommand):
             if ingr_total:
                 _model.objects.bulk_create(ingr_total)
                 print("Загрузилось")
-
-                

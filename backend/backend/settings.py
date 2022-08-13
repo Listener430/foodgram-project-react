@@ -45,7 +45,6 @@ ROOT_URLCONF = "backend.urls"
 AUTH_USER_MODEL = "users.User"
 
 
-
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
     {
@@ -89,7 +88,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#AUTH_USER_MODEL = "users.User"
+# AUTH_USER_MODEL = "users.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 
@@ -146,5 +145,3 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static/"),)
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
-

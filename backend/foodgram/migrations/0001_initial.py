@@ -10,89 +10,198 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Favorite',
+            name="Favorite",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Follow',
+            name="Follow",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Ingredient',
+            name="Ingredient",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('measurement_unit', models.CharField(max_length=200)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("measurement_unit", models.CharField(max_length=200)),
             ],
             options={
-                'verbose_name': 'Ингредиент',
-                'verbose_name_plural': 'Ингредиент',
+                "verbose_name": "Ингредиент",
+                "verbose_name_plural": "Ингредиент",
             },
         ),
         migrations.CreateModel(
-            name='IngredientRecipeAmount',
+            name="IngredientRecipeAmount",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.PositiveSmallIntegerField(verbose_name='Количество ингредиентов')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "amount",
+                    models.PositiveSmallIntegerField(
+                        verbose_name="Количество ингредиентов"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Количество ингридиента',
-                'verbose_name_plural': 'Количество ингридиентов',
+                "verbose_name": "Количество ингридиента",
+                "verbose_name_plural": "Количество ингридиентов",
             },
         ),
         migrations.CreateModel(
-            name='Recipe',
+            name="Recipe",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='media/', verbose_name='Картинка')),
-                ('name', models.CharField(max_length=200)),
-                ('text', models.CharField(max_length=2000)),
-                ('cooking_time', models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(1, message='больше 1')], verbose_name='Время приготовления')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(upload_to="media/", verbose_name="Картинка"),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("text", models.CharField(max_length=2000)),
+                (
+                    "cooking_time",
+                    models.PositiveIntegerField(
+                        validators=[
+                            django.core.validators.MinValueValidator(
+                                1, message="больше 1"
+                            )
+                        ],
+                        verbose_name="Время приготовления",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Рецепт',
-                'verbose_name_plural': 'Рецепты',
+                "verbose_name": "Рецепт",
+                "verbose_name_plural": "Рецепты",
             },
         ),
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, unique=True)),
-                ('color', colorfield.fields.ColorField(default='#FF0000', image_field=None, max_length=18, samples=None, unique=True)),
-                ('slug', models.SlugField(max_length=200, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200, unique=True)),
+                (
+                    "color",
+                    colorfield.fields.ColorField(
+                        default="#FF0000",
+                        image_field=None,
+                        max_length=18,
+                        samples=None,
+                        unique=True,
+                    ),
+                ),
+                ("slug", models.SlugField(max_length=200, unique=True)),
             ],
             options={
-                'verbose_name': 'Таг',
-                'verbose_name_plural': 'Теги',
+                "verbose_name": "Таг",
+                "verbose_name_plural": "Теги",
             },
         ),
         migrations.CreateModel(
-            name='TagRecipe',
+            name="TagRecipe",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='foodgram.Recipe')),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='foodgram.Tag')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="foodgram.Recipe",
+                    ),
+                ),
+                (
+                    "tag",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="foodgram.Tag"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Тег',
-                'verbose_name_plural': 'Теги на рецепты',
+                "verbose_name": "Тег",
+                "verbose_name_plural": "Теги на рецепты",
             },
         ),
         migrations.CreateModel(
-            name='ShoppingCart',
+            name="ShoppingCart",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='shopping_following_recipe', to='foodgram.Recipe', verbose_name='Рецепт')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="shopping_following_recipe",
+                        to="foodgram.Recipe",
+                        verbose_name="Рецепт",
+                    ),
+                ),
             ],
         ),
     ]

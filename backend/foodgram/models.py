@@ -1,7 +1,7 @@
-from colorfield.fields import ColorField
 from django.core import validators
 from django.db import models
 
+from colorfield.fields import ColorField
 from users.models import User
 
 
@@ -39,10 +39,7 @@ class Recipe(models.Model):
     text = models.CharField(max_length=2000)
     cooking_time = models.PositiveIntegerField(
         verbose_name="Время приготовления",
-        validators=(
-            validators.MinValueValidator(
-                1, message="больше 1"),
-        ),
+        validators=(validators.MinValueValidator(1, message="больше 1"),),
     )
 
     class Meta:
@@ -59,18 +56,17 @@ class IngredientRecipeAmount(models.Model):
         Ingredient, on_delete=models.CASCADE, related_name="ingredientrecipeamount"
     )
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    amount = models.PositiveSmallIntegerField(
-        verbose_name="Количество ингредиентов")
+    amount = models.PositiveSmallIntegerField(verbose_name="Количество ингредиентов")
 
     class Meta:
         verbose_name = "Количество ингредиента"
         verbose_name_plural = "Количество ингредиентов"
         constraints = [
             models.UniqueConstraint(
-                fields=["ingredient", "recipe"],
-                name="unique_ingredients_recipe"
+                fields=["ingredient", "recipe"], name="unique_ingredients_recipe"
             )
         ]
+
     def __str__(self):
         return f"{self.ingredient} {self.recipe} {self.amount}"
 
@@ -78,16 +74,15 @@ class IngredientRecipeAmount(models.Model):
 class TagRecipe(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    
+
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["tag", "recipe"],
-                name="unique_tag_recipe")
+            models.UniqueConstraint(fields=["tag", "recipe"], name="unique_tag_recipe")
         ]
 
         verbose_name = "Тег"
         verbose_name_plural = "Теги на рецепты"
+
     def __str__(self):
         return f"{self.tag} {self.recipe}"
 
@@ -156,5 +151,3 @@ class ShoppingCart(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["user", "recipe"], name="unique_follower")
         ]
-
-        
