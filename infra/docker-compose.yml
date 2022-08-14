@@ -9,7 +9,8 @@ services:
 
   backend:
     build:
-      image: listener123/foodgram
+      context: ../backend
+      dockerfile: /backend/Dockerfile
     restart: always
     volumes:
       - static_value:/backend/static/
@@ -21,7 +22,8 @@ services:
 
   frontend:
     build:
-      image: listener123/foodgram-frontend
+      context: ../frontend
+      dockerfile: /backend/Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
 
