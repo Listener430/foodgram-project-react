@@ -1,6 +1,5 @@
 from django.core import validators
 from django.db import models
-from colorfield.fields import ColorField
 
 from users.models import User
 
@@ -18,7 +17,7 @@ class Ingredient(models.Model):
 class Tag(models.Model):
 
     name = models.CharField(max_length=200, unique=True)
-    color = ColorField(default="#FF0000", unique=True)
+    color = models.CharField(max_length=7, default="#FF0000", unique=True)
     slug = models.SlugField(max_length=200, unique=True)
 
     class Meta:
