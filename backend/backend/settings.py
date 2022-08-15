@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django_filters",
     "foodgram",
     "foodgram_api",
+    "users",
 ]
 
 MIDDLEWARE = [
