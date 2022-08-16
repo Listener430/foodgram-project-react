@@ -15,6 +15,7 @@ from foodgram.models import (
     IngredientRecipeAmount,
     Recipe,
     ShoppingCart,
+    Tag
 )
 from users.models import User
 from .filters import IngredientSearchFilter
@@ -25,6 +26,7 @@ from .serializers import (
     RecipeShortSerializer,
     SubcriptionsListSerializer,
     SubcriptionsSerializer,
+    TagSerializer
 )
 
 
@@ -35,6 +37,13 @@ class IngredientViewSet(ListMixin):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filterset_class = IngredientSearchFilter
     search_fields = ("^name",)
+
+
+class TagViewSet(ListMixin):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    pagination_class = LimitOffsetPagination
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
