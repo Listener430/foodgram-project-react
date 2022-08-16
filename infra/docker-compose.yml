@@ -11,8 +11,8 @@ services:
     image: listener123/foodgram:latest
     restart: always
     volumes:
-      - static_value:/backend/static/
-      - media_value:/backend/media/
+      - static_value:/backend/static_b/
+      - media_value:/backend/media_b/
     depends_on:
       - db
     env_file:
