@@ -33,7 +33,7 @@ from .serializers import (
 class IngredientViewSet(ListMixin):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = None
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filterset_class = IngredientSearchFilter
     search_fields = ("^name",)
@@ -42,7 +42,7 @@ class IngredientViewSet(ListMixin):
 class TagViewSet(ListMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = None
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
