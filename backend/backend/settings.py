@@ -109,7 +109,6 @@ REST_AUTH_SERIALIZERS = {
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -124,10 +123,15 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
+    "LOGIN_FIELD": "email",
     "SERIALIZERS": {
         "user_create": "users.serializers.CustomUserSerializer",
         "user": "users.serializers.CustomUserListSerializer",
         "current_user": "users.serializers.CustomUserListSerializer",
+    },
+    "PERMISSIONS": {
+        'user_list': ('rest_framework.permissions.AllowAny',),
+        "user_list": ('rest_framework.permissions.AllowAny',),
     },
     "HIDE_USERS": False,
 }

@@ -15,17 +15,6 @@ class CustomUserSerializer(serializers.UserCreateSerializer):
             "first_name",
             "password",
         )
-        extra_kwargs = {
-            "last_name": {
-                "required": True,
-            },
-            "first_name": {
-                "required": True,
-            },
-            "email": {
-                "required": True,
-            },
-        }
 
 
 class CustomUserListSerializer(serializers.UserCreateSerializer):
