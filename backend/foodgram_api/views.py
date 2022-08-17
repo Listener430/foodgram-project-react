@@ -121,7 +121,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
     serializer_class = SubcriptionsSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = None
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self, *args, **kwargs):
