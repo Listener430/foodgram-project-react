@@ -17,13 +17,14 @@ class CustomUserSerializer(serializers.UserCreateSerializer):
         )
 
 
-class CustomUserListSerializer(serializers.UserCreateSerializer):
+class CustomerUserListSerializer(serializers.UserCreateSerializer):
 
     is_subscribed = sr.SerializerMethodField()
 
     class Meta:
         model = User
         fields = (
+            "id",
             "username",
             "email",
             "last_name",
