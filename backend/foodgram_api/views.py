@@ -49,7 +49,6 @@ class TagViewSet(ListMixin):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
 
@@ -156,7 +155,6 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 class SubscriptionListViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = SubcriptionsListSerializer
-    pagination_class = LimitOffsetPagination
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def subscriptions(self, request, *args, **kwargs):
