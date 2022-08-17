@@ -32,7 +32,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag, through="TagRecipe")
     image = models.ImageField(
         verbose_name="Картинка",
-        upload_to="media/",
+        upload_to="recipe_images",
     )
     name = models.CharField(max_length=200)
     text = models.CharField(max_length=2000)
