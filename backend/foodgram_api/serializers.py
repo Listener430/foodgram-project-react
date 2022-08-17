@@ -103,15 +103,15 @@ class RecipeSerializer(serializers.ModelSerializer):
     def validate(self, data):
         ingredients = data["ingredientrecipeamount_set"]
         if not ingredients:
-            raise serializers.ValidationError({"ingredients": "Нет ингредиентов"})
+            raise serializers.ValidationError("Нет ингредиентов")
         ingredients_ids = [item_ingr["ingredient"] for item_ingr in ingredients]
         if len(ingredients_ids) != len(set(ingredients_ids)):
-            raise serializers.ValidationError({"ingredients": "Повторяются!!!"})
+            raise serializers.ValidationError("Ингредиенты овторяются!!!")
         tags = data["tags"]
         if len(tags) != len(set(tags)):
-            raise serializers.ValidationError({"tags": "Повторяются!!!"})
+            raise serializers.ValidationError("Теги повторяются!!!")
         if not tags:
-            raise serializers.ValidationError({"tags": "Нет тегов"})
+            raise serializers.ValidationError("Нет тегов")
         return data
 
     def create_ingredients(self, ingredients_data, recipe):

@@ -121,8 +121,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
     serializer_class = SubcriptionsSerializer
-    pagination_class = None
-    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self, *args, **kwargs):
         return User.objects.filter(id=self.kwargs.get("user_id"))
