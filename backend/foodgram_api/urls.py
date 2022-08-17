@@ -21,7 +21,6 @@ urlpatterns = [
         "users/<int:user_id>/subscribe/",
         SubscriptionViewSet.as_view(
             {
-                "get": "list",
                 "post": "create_subscription",
                 "delete": "delete_subscription",
             }

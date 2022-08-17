@@ -19,7 +19,7 @@ class CustomUserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("username", "email", "last_name", "first_name", "is_subscribed")
+        fields = ("id", "username", "email", "last_name", "first_name", "is_subscribed")
 
     def get_is_subscribed(self, obj):
         request = self.context.get("request")
