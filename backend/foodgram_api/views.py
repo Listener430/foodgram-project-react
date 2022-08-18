@@ -166,4 +166,4 @@ class SubscriptionListViewSet(viewsets.ModelViewSet):
         serializer = SubcriptionsListSerializer(
                 page, many=True, context={"request": self.request}
             ).data
-        return self.get_paginated_response(serializer.data)
+        return self.get_paginated_response(serializer)
