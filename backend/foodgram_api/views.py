@@ -155,6 +155,7 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 class SubscriptionListViewSet(viewsets.ModelViewSet):
     serializer_class = SubcriptionsListSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = PageNumberPagination
 
     def get_queryset(self, request, *args, **kwargs):
         return User.objects.filter(following__user=request.user)
