@@ -153,9 +153,11 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 
 
 class SubscriptionListViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
     serializer_class = SubcriptionsListSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get_queryset(self, request, *args, **kwargs):
+        return User.objects.filter(following__user=request.user)
 
     def subscriptions(self, request, *args, **kwargs):
         queryset = User.objects.filter(following__user=request.user)

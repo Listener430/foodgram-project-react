@@ -188,7 +188,7 @@ class SubcriptionsSerializer(serializers.ModelSerializer):
 
 
 class SubcriptionsListSerializer(serializers.ModelSerializer):
-    recipes = serializers.SerializerMethodField()
+    recipes = RecipeShortSerializer(many=True)
     recipes_count = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
 
@@ -204,10 +204,6 @@ class SubcriptionsListSerializer(serializers.ModelSerializer):
             "is_subscribed",
             "recipes_count",
         )
-
-    def get_recipes(self, obj):
-        queryset = Recipe.objects.filter(author=obj)
-        return RecipeShortSerializer(queryset, many=True).data
 
     def get_is_subscribed(self, obj):
         request = self.context.get("request")
