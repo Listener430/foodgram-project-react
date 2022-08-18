@@ -155,15 +155,14 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 class SubscriptionListViewSet(viewsets.ModelViewSet):
     serializer_class = SubcriptionsListSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    pagination_class = PageNumberPagination
 
     def get_queryset(self, request, *args, **kwargs):
         return User.objects.filter(following__user=request.user)
 
     def subscriptions(self, request, *args, **kwargs):
         queryset = User.objects.filter(following__user=request.user)
-        page = self.paginate_queryset(queryset)
-        serializer = SubcriptionsListSerializer(
-                page, many=True, context={"request": self.request}
+        return Response(
+            SubcriptionsListSerializer(
+                queryset, many=True, context={"request": self.request}
             ).data
-        return self.get_paginated_response(serializer)
+        )
