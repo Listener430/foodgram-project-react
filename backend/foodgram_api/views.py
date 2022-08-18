@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -18,7 +17,7 @@ from foodgram.models import (
     Tag
 )
 from users.models import User
-from .filters import IngredientSearchFilter
+from .filters import IngredientSearchFilter, RecipeFilter
 from .mixins import ListMixin
 from .serializers import (
     IngredientSerializer,
@@ -51,6 +50,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -161,8 +161,9 @@ class SubscriptionListViewSet(viewsets.ModelViewSet):
 
     def subscriptions(self, request, *args, **kwargs):
         queryset = User.objects.filter(following__user=request.user)
+        page = self.paginate_queryset(queryset)
         return self.get_paginated_response(
             SubcriptionsListSerializer(
-                queryset, many=True, context={"request": self.request}
+                page, many=True, context={"request": self.request}
             ).data
         )
