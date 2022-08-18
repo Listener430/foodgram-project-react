@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -155,15 +155,15 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 class SubscriptionListViewSet(viewsets.ModelViewSet):
     serializer_class = SubcriptionsListSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = PageNumberPagination
 
     def get_queryset(self, request, *args, **kwargs):
         return User.objects.filter(following__user=request.user)
 
     def subscriptions(self, request, *args, **kwargs):
         queryset = User.objects.filter(following__user=request.user)
-        return Response(
-            SubcriptionsListSerializer(
-                queryset, many=True, context={"request": self.request}
-            ).data,
-            status=status.HTTP_200_OK,
-        )
+        page = self.paginate_queryset(queryset)
+        serializer = SubcriptionsListSerializer(
+                page, many=True, context={"request": self.request}
+            ).data
+        return self.get_paginated_response(serializer.data)
