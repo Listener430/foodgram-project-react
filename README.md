@@ -42,7 +42,7 @@ sudo docker-compose exec backend python manage.py loadfile --path "./data/ingred
 sudo docker-compose exec backend python manage.py loadfile_copy --path "./data/tags.csv" --model_name "Tag" --app_name "foodgram"
 
 Адрес сайта:
-http://84.252.142.151/recipes
+http://51.250.105.246/recipes
 
 суперюзер:
 super@mail.ru
