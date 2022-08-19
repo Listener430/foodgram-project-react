@@ -33,3 +33,8 @@ class RecipeFilter(FilterSet):
         if value:
             return queryset.filter(shopping_following_recipe__user=self.request.user)
         return queryset
+
+    def filter_tags(self, queryset, name, value):
+        values = self.data.getlist("tags")
+        lookup = f"{name}__in"
+        return queryset.filter(**{lookup: values}).distinct()
