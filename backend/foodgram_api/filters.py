@@ -15,6 +15,7 @@ class IngredientSearchFilter(FilterSet):
 
 
 class RecipeFilter(FilterSet):
+    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = filters.BooleanFilter(method="filter_is_favorited")
     is_in_shopping_cart = filters.BooleanFilter(
         method="filter_is_in_shopping_cart"
@@ -22,7 +23,7 @@ class RecipeFilter(FilterSet):
 
     class Meta:
         model = Recipe
-        fields = ("is_in_shopping_cart", "is_favorited")
+        fields = ("tags", "is_in_shopping_cart", "is_favorited")
 
     def filter_is_favorited(self, queryset, name, value):
         if value:
@@ -33,8 +34,3 @@ class RecipeFilter(FilterSet):
         if value:
             return queryset.filter(shopping_following_recipe__user=self.request.user)
         return queryset
-
-    def filter_tags(self, queryset, name, value):
-        values = self.data.getlist("tags")
-        lookup = f"{name}__in"
-        return queryset.filter(**{lookup: values}).distinct()
