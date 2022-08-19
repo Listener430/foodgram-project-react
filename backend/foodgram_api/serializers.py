@@ -188,7 +188,7 @@ class SubcriptionsSerializer(serializers.ModelSerializer):
 
 
 class SubcriptionsListSerializer(serializers.ModelSerializer):
-    recipes = RecipeShortSerializer(many=True)
+    recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
 
@@ -210,6 +210,18 @@ class SubcriptionsListSerializer(serializers.ModelSerializer):
         if request is None or request.user.is_anonymous:
             return False
         return Follow.objects.filter(user=request.user, author=obj).exists()
+
+    def get_recipes(self, obj):
+        request = self.context.get("request")
+        if not request or request.user.is_anonymous:
+            return False
+        context = {"request": request}
+        recipes_limit = request.query_params.get("recipes_limit")
+        if recipes_limit is not None:
+            recipes = obj.recipes.all()[: int(recipes_limit)]
+        else:
+            recipes = obj.recipes.all()
+        return RecipeShortSerializer(recipes, many=True, context=context).data
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()
