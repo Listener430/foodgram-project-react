@@ -52,7 +52,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    paginator_class = LimitPageNumberPagination
+    pagination_class = LimitPageNumberPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
