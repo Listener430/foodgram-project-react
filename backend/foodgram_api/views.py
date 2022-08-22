@@ -19,6 +19,7 @@ from foodgram.models import (
 from users.models import User
 from .filters import IngredientSearchFilter, RecipeFilter
 from .mixins import ListMixin
+from .paginations import LimitPageNumberPagination
 from .serializers import (
     IngredientSerializer,
     RecipeSerializer,
@@ -51,6 +52,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+    paginator_class = LimitPageNumberPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
